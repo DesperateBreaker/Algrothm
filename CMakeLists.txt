@@ -13,7 +13,7 @@ set(CMAKE_CXX_STANDARD 20)
 include_directories(include)
 
 # 添加源文件
-set(SRC_LIST src/main.cpp src/MySort.cpp)
+set(SRC_LIST src/main.cpp src/MySort.cpp tests/MySortUnitTest.cpp)
 
 # 创建
 add_executable(Algorithm ${SRC_LIST})
