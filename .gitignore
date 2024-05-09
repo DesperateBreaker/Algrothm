@@ -1,0 +1,19 @@
+.lightly
+.c_bin
+.classes
+logs
+*.log
+node_modules
+dist
+dist-ssr
+*.local
+
+# Ignore build folders
+cmake-build-debug/
+
+# Ignore specific file types
+*.log
+*.cache
+
+# Ignore IDE-specific settings
+.idea/
