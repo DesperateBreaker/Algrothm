@@ -98,6 +98,18 @@ template <typename T>
 void BubbleSort<T>::ArrySort(std::vector<T>& arr)
 {
     std::cout << "This is BubbleSort!\n";
+    int nSize = arr.size();
+
+    for(int i = 0; i < nSize; i++)
+    {
+        for (int j = 0; j < nSize - i - 1; j++)
+        {
+            if (arr[j] > arr[j + 1])
+            {
+                Swap(arr, j, j + 1);
+            }
+        }
+    }
 }
 
 template <typename T>
