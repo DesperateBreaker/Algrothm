@@ -2,5 +2,6 @@
 #include "../include/MyHeader.h"
 
 int main() {
-    RunAllSortTests();
+    bool bRet = RunAllSortTests();
+    std::cout << bRet;
 }
