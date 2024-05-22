@@ -73,6 +73,10 @@ bool RunAllSortTests()
     // 归并排序测试
     MergeSort<int> mergeSort;
     bRet &= ComparativeTest(&mergeSort);
+
+    // 快速排序测试
+    QuickSort<int> quckSort;
+    bRet &= ComparativeTest(&quckSort);
     
     return bRet;
 }

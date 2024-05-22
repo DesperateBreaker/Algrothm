@@ -1,5 +1,6 @@
 // 排序算法类
 #include "stdafx.h"
+#include <utility>
 #include <vector>
 
 // --------------------------- MySort.h--------------------------- //
@@ -54,10 +55,13 @@ private:
 
 // 快速排序
 template <typename T>
-class FastSort : public Sort<T>
+class QuickSort : public Sort<T>
 {
 public:
     virtual void ArrySort(std::vector<T>& arr);
+private:
+    void QuickSortProcess(std::vector<T>& arr, int low, int high);
+    std::pair<int, int> Partition(std::vector<T>& arr, int low, int high);
 };
 
 // 堆排序
@@ -233,10 +237,72 @@ void MergeSort<T>::Merge(std::vector<T>& arr, std::vector<T>& assistArr, int nL,
     return;
 }
 
+// 快速序
+// 思想：分治思想、基准分类思想
+// 时间复杂度：O(NLogN)
+// 空间复杂度：O（LogN）
+// 稳定性：不稳定
 template <typename T>
-void FastSort<T>::ArrySort(std::vector<T>& arr)
+void QuickSort<T>::ArrySort(std::vector<T>& arr)
 {
-    std::cout << "This is FastSort!\n";
+    std::cout << "This is QuickSort!\n";
+    int nSize = arr.size();
+    if (nSize < 2)
+        return;
+
+    // 排序过程
+    QuickSortProcess(arr, 0, nSize - 1);
+}
+
+// 快速排序辅助函数： 递归过程
+template <typename T>
+void QuickSort<T>::QuickSortProcess(std::vector<T>& arr, int low, int high)
+{
+    if (high <= low)
+        return;
+
+    auto [leftIndex, rightIndex] = Partition(arr, low, high);
+
+    // 递归排序左半部分
+    QuickSortProcess(arr, low, leftIndex - 1);
+
+    // 递归排序右半部分
+    QuickSortProcess(arr, rightIndex + 1, high);  
+}
+
+// 快速排序辅助函数： Partition 过程
+template <typename T>
+std::pair<int, int> QuickSort<T>::Partition(std::vector<T>& arr, int low, int high)
+{
+    // 选择基准元素 (理论上随机选较好、这里取最后一个元素)
+    T basic_elem = arr[high];
+
+    int lessAreaIndex  = low;       // 小于区域索引(包含)
+    int greaterAreaIndex = high;    // 大于区域索引(包含)
+
+    int nNowIndex = low;
+
+    while (nNowIndex <= greaterAreaIndex)
+    {
+        // 如果小于基准值，当前元素与小于区域后一个元素交换，小于区域向右扩展
+        if (arr[nNowIndex] < basic_elem)
+        {
+            std::swap(arr[lessAreaIndex], arr[nNowIndex]);
+            lessAreaIndex++;
+            nNowIndex++;
+        }
+        else if (arr[nNowIndex] == basic_elem)
+        {
+            nNowIndex++;
+        }
+        else
+        {
+            std::swap(arr[greaterAreaIndex], arr[nNowIndex]);
+            greaterAreaIndex--;
+        }
+    }
+
+    return std::make_pair(lessAreaIndex, greaterAreaIndex);
 }
 
 template <typename T>
