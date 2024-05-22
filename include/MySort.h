@@ -48,8 +48,8 @@ class MergeSort : public Sort<T>
 public:
     virtual void ArrySort(std::vector<T>& arr);
 private:
-    std::vector<T> MergeSortProcess(std::vector<T>& arr, int nL, int nR);
-    std::vector<T> Merge(std::vector<T>& arr1, std::vector<T>& arr2);
+    void MergeSortProcess(std::vector<T>& arr, std::vector<T>& assistArr, int nL, int nR);
+    void Merge(std::vector<T>& arr, std::vector<T>& tempArr, int nL, int nMid, int nR);
 };
 
 // 快速排序
@@ -176,61 +176,61 @@ void MergeSort<T>::ArrySort(std::vector<T>& arr)
     int nSize = arr.size();
     if (nSize < 2)
         return;
+
+    // 辅助数组，避免频繁的内存分配
+    std::vector<T> assistArr(nSize);
     
-    arr = MergeSortProcess(arr, 0, nSize - 1);
+    MergeSortProcess(arr, assistArr, 0, nSize - 1);
 }
 
 // 归并排序辅助函数： 递归过程
 template <typename T>
-std::vector<T> MergeSort<T>::MergeSortProcess(std::vector<T>& arr, int nL, int nR)
+void MergeSort<T>::MergeSortProcess(std::vector<T>& arr, std::vector<T>& assistArr, int nL, int nR)
 {
     std::vector<T> result;
     
     if (nL == nR)
-    {
-        result.push_back(arr[nL]);
-        return result;
-    }
+        return;
 
     int nMid = nL + ((nR - nL) >> 1);
-    std::vector<T> resultLeft = MergeSortProcess(arr, nL, nMid);
-    std::vector<T> resultRight = MergeSortProcess(arr, nMid + 1, nR);
+    MergeSortProcess(arr, assistArr, nL, nMid);
+    MergeSortProcess(arr, assistArr, nMid + 1, nR);
 
-    result = Merge(resultLeft, resultRight);
+    Merge(arr, assistArr, nL, nMid, nR);
 
-    return result;
+    return;
 }
 
 // 归并排序辅助函数：合并过程
 template <typename T>
-std::vector<T> MergeSort<T>::Merge(std::vector<T>& arr1, std::vector<T>& arr2)
+void MergeSort<T>::Merge(std::vector<T>& arr, std::vector<T>& assistArr, int nL, int nMid, int nR)
 {
-    int nLeftSize = arr1.size();
-    int nRightSize = arr2.size();
+    int pLeft = nL;
+    int pRight = nMid + 1;
 
-    int pLeft = 0;
-    int pRight = 0;
+    int pTemp = nL;
 
     std::vector<T> result;
-    while(pLeft < nLeftSize && pRight < nRightSize)
+    while(pLeft <= nMid && pRight <= nR)
     {
         // attention: 要想保持稳定性，相等时应先拷贝左边元素
         // 但对于小和问题、逆序对问题时，有可能要先拷贝右侧元素，这样势必会破坏该算法的稳定性
-        T minElement = arr1[pLeft] <= arr2[pRight] ? arr1[pLeft++] : arr2[pRight++];
-        result.push_back(minElement);
+        assistArr[pTemp++] = arr[pLeft] <= arr[pRight] ? arr[pLeft++] : arr[pRight++];
     }
 
-    while(pLeft < nLeftSize)
-    {
-        result.push_back(arr1[pLeft++]);
-    }
+    // 左侧还有剩余
+    while(pLeft <= nMid)
+        assistArr[pTemp++] = arr[pLeft++];
 
-    while(pRight < nRightSize)
-    {
-        result.push_back(arr2[pRight++]);
-    }
+    // 右侧还有剩余
+    while(pRight <= nR)
+        assistArr[pTemp++] = arr[pRight++];
 
-    return result;
+    // 将局部排序结果拷贝至原数组
+    for (int i = nL; i <= nR; ++i)
+        arr[i] = assistArr[i];
+
+    return;
 }
 
 template <typename T>
