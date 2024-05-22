@@ -1,5 +1,6 @@
 // 排序算法类
 #include "stdafx.h"
+#include <vector>
 
 // --------------------------- MySort.h--------------------------- //
 
@@ -44,6 +45,9 @@ class MergeSort : public Sort<T>
 {
 public:
     virtual void ArrySort(std::vector<T>& arr);
+private:
+    std::vector<T> MergeSortProcess(std::vector<T>& arr, int nL, int nR);
+    std::vector<T> Merge(std::vector<T>& arr1, std::vector<T>& arr2);
 };
 
 // 快速排序
@@ -158,10 +162,73 @@ void InsertSort<T>::ArrySort(std::vector<T>& arr)
     }
 }
 
+// 归并排序
+// 思想：分治思想
+// 时间复杂度：O(NLogN)
+// 空间复杂度：O（N）
+// 稳定性：稳定
 template <typename T>
 void MergeSort<T>::ArrySort(std::vector<T>& arr)
 {
     std::cout << "This is MergeSort!\n";
+    int nSize = arr.size();
+    if (nSize < 2)
+        return;
+    
+    arr = MergeSortProcess(arr, 0, nSize - 1);
+}
+
+// 归并排序辅助函数： 递归过程
+template <typename T>
+std::vector<T> MergeSort<T>::MergeSortProcess(std::vector<T>& arr, int nL, int nR)
+{
+    std::vector<T> result;
+    
+    if (nL == nR)
+    {
+        result.push_back(arr[nL]);
+        return result;
+    }
+
+    int nMid = nL + ((nR - nL) >> 1);
+    std::vector<T> resultLeft = MergeSortProcess(arr, nL, nMid);
+    std::vector<T> resultRight = MergeSortProcess(arr, nMid + 1, nR);
+
+    result = Merge(resultLeft, resultRight);
+
+    return result;
+}
+
+// 归并排序辅助函数：合并过程
+template <typename T>
+std::vector<T> MergeSort<T>::Merge(std::vector<T>& arr1, std::vector<T>& arr2)
+{
+    int nLeftSize = arr1.size();
+    int nRightSize = arr2.size();
+
+    int pLeft = 0;
+    int pRight = 0;
+
+    std::vector<T> result;
+    while(pLeft < nLeftSize && pRight < nRightSize)
+    {
+        // attention: 要想保持稳定性，相等时应先拷贝左边元素
+        // 但对于小和问题、逆序对问题时，有可能要先拷贝右侧元素，这样势必会破坏该算法的稳定性
+        T minElement = arr1[pLeft] <= arr2[pRight] ? arr1[pLeft++] : arr2[pRight++];
+        result.push_back(minElement);
+    }
+
+    while(pLeft < nLeftSize)
+    {
+        result.push_back(arr1[pLeft++]);
+    }
+
+    while(pRight < nRightSize)
+    {
+        result.push_back(arr2[pRight++]);
+    }
+
+    return result;
 }
 
 template <typename T>

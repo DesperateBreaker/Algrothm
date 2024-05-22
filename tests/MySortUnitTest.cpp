@@ -69,6 +69,10 @@ bool RunAllSortTests()
     // 插补排序测试
     InsertSort<int> insertSort;
     bRet &= ComparativeTest(&insertSort);
+
+    // 归并排序测试
+    MergeSort<int> mergeSort;
+    bRet &= ComparativeTest(&mergeSort);
     
     return bRet;
 }
