@@ -70,6 +70,8 @@ class HeapSort : public Sort<T>
 {
 public:
     virtual void ArrySort(std::vector<T>& arr);
+private:
+    void heapfyDown(std::vector<T>& arr, int index, int size);          // heapfydown 操作，size: 调整至什么位置结束
 };
 
 
@@ -237,7 +239,7 @@ void MergeSort<T>::Merge(std::vector<T>& arr, std::vector<T>& assistArr, int nL,
     return;
 }
 
-// 快速序
+// 快速排序
 // 思想：分治思想、基准分类思想
 // 时间复杂度：O(NLogN)
 // 空间复杂度：O（LogN）
@@ -305,10 +307,57 @@ std::pair<int, int> QuickSort<T>::Partition(std::vector<T>& arr, int low, int hi
     return std::make_pair(lessAreaIndex, greaterAreaIndex);
 }
 
+// 堆排序
+// 思想：构建堆 -> 最大值位于堆顶，除去最大值重新构建堆，重复执行 
+// 时间复杂度：O(NLogN)
+// 空间复杂度：O（1）
+// 稳定性：不稳定
 template <typename T>
 void HeapSort<T>::ArrySort(std::vector<T>& arr)
 {
     std::cout << "This is HeapSort!\n";
+    int nSize = arr.size();
+    if (nSize < 2)
+        return;
+
+    // 将 arr 调整为大根堆形式、调整完之后最大值位于堆顶
+    for (int i = (nSize >> 1) - 1; i >= 0; i--)
+    {
+        heapfyDown(arr, i, nSize);
+    }
+
+    // 将最大值交换至尾部，剩下元素重新调整为大根堆(堆顶元素向下一次 heapfyDown 操作)
+    for (int i = nSize - 1; i >= 1; i--)
+    {
+        std::swap(arr[0], arr[i]);
+        heapfyDown(arr, 0, i);
+    }
+
+    return;
+}
+
+// 堆排序辅助函数
+template <typename T>
+void HeapSort<T>::heapfyDown(std::vector<T>& arr, int index, int size)
+{
+    int leftIndex = 2 * index + 1;      // 左子节点
+    int rightIndex = 2 * index + 2;     // 右子节点
+
+    int largestIndex = index;           // 较大节点
+
+    if (leftIndex < size && arr[leftIndex] > arr[largestIndex])
+        largestIndex = leftIndex;
+
+    if (rightIndex < size && arr[rightIndex] > arr[largestIndex])
+        largestIndex = rightIndex;
+
+    if (largestIndex != index)
+    {
+        std::swap(arr[largestIndex], arr[index]);
+        heapfyDown(arr, largestIndex, size);
+    }
+
+    return;
 }
 
 template <typename T>

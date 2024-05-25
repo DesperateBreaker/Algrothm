@@ -77,6 +77,10 @@ bool RunAllSortTests()
     // 快速排序测试
     QuickSort<int> quckSort;
     bRet &= ComparativeTest(&quckSort);
-    
+
+    // 堆排序测试
+    HeapSort<int> heapSort;
+    bRet &= ComparativeTest(&heapSort);
+
     return bRet;
 }
