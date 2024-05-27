@@ -5,8 +5,6 @@
 
 // --------------------------- MySort.h--------------------------- //
 
-// --------------------------- MySort.h--------------------------- //
-
 // 接口类
 template <typename T>
 class Sort
@@ -49,8 +47,8 @@ class MergeSort : public Sort<T>
 public:
     virtual void ArrySort(std::vector<T>& arr);
 private:
-    void MergeSortProcess(std::vector<T>& arr, std::vector<T>& assistArr, int nL, int nR);
-    void Merge(std::vector<T>& arr, std::vector<T>& tempArr, int nL, int nMid, int nR);
+    void MergeSortProcess(std::vector<T>& arr, std::vector<T>& assistArr, int nL, int nR);              // 归并排序的递归过程
+    void Merge(std::vector<T>& arr, std::vector<T>& tempArr, int nL, int nMid, int nR);                 // 归并排序的合并过程
 };
 
 // 快速排序
@@ -60,8 +58,8 @@ class QuickSort : public Sort<T>
 public:
     virtual void ArrySort(std::vector<T>& arr);
 private:
-    void QuickSortProcess(std::vector<T>& arr, int low, int high);
-    std::pair<int, int> Partition(std::vector<T>& arr, int low, int high);
+    void QuickSortProcess(std::vector<T>& arr, int nLow, int nHigh);                                    // 快速排序的递归过程
+    std::pair<int, int> Partition(std::vector<T>& arr, int nLow, int nHigh);                            // 快速排序的 Patition
 };
 
 // 堆排序
@@ -71,7 +69,7 @@ class HeapSort : public Sort<T>
 public:
     virtual void ArrySort(std::vector<T>& arr);
 private:
-    void heapfyDown(std::vector<T>& arr, int index, int size);          // heapfydown 操作，size: 调整至什么位置结束
+    void heapfyDown(std::vector<T>& arr, int nIndex, int nSize);                                        // heapfydown 操作 nSize: 调整至什么位置结束
 };
 
 
@@ -80,7 +78,7 @@ private:
 
 // 交换数组中的值
 template <typename T>
-void Swap(std::vector<T>& arr, int index1, int index2);
+void Swap(std::vector<T>& arr, int nIndex1, int nIndex2);
 
 
 
@@ -98,6 +96,8 @@ void SelectSort<T>::ArrySort(std::vector<T>& arr)
 {
     std::cout << "This is SelectSort!\n";
     int nSize = arr.size();
+    if (nSize < 2)
+        return;
     
     // 外层循环：已排序区域
     for (int i = 0; i < nSize; i++)
@@ -125,6 +125,8 @@ void BubbleSort<T>::ArrySort(std::vector<T>& arr)
 {
     std::cout << "This is BubbleSort!\n";
     int nSize = arr.size();
+    if (nSize < 2)
+        return;
 
     // 外层循环：排序的轮数
     for(int i = 0; i < nSize; i++)
@@ -150,6 +152,8 @@ void InsertSort<T>::ArrySort(std::vector<T>& arr)
 {
     std::cout << "This is InsertSort!\n";
     int nSize = arr.size();
+    if (nSize < 2)
+        return;
 
     // 外层循环：已排序区域(0 位置已经有序)
     for (int i = 1; i < nSize; i++)
@@ -258,31 +262,31 @@ void QuickSort<T>::ArrySort(std::vector<T>& arr)
 
 // 快速排序辅助函数： 递归过程
 template <typename T>
-void QuickSort<T>::QuickSortProcess(std::vector<T>& arr, int low, int high)
+void QuickSort<T>::QuickSortProcess(std::vector<T>& arr, int nLow, int nHigh)
 {
-    if (high <= low)
+    if (nHigh <= nLow)
         return;
 
-    auto [leftIndex, rightIndex] = Partition(arr, low, high);
+    auto [leftIndex, rightIndex] = Partition(arr, nLow, nHigh);
 
     // 递归排序左半部分
-    QuickSortProcess(arr, low, leftIndex - 1);
+    QuickSortProcess(arr, nLow, leftIndex - 1);
 
     // 递归排序右半部分
-    QuickSortProcess(arr, rightIndex + 1, high);  
+    QuickSortProcess(arr, rightIndex + 1, nHigh);  
 }
 
 // 快速排序辅助函数： Partition 过程
 template <typename T>
-std::pair<int, int> QuickSort<T>::Partition(std::vector<T>& arr, int low, int high)
+std::pair<int, int> QuickSort<T>::Partition(std::vector<T>& arr, int nLow, int nHigh)
 {
     // 选择基准元素 (理论上随机选较好、这里取最后一个元素)
-    T basic_elem = arr[high];
+    T basic_elem = arr[nHigh];
 
-    int lessAreaIndex  = low;       // 小于区域索引(包含)
-    int greaterAreaIndex = high;    // 大于区域索引(包含)
+    int lessAreaIndex  = nLow;       // 小于区域索引(包含)
+    int greaterAreaIndex = nHigh;    // 大于区域索引(包含)
 
-    int nNowIndex = low;
+    int nNowIndex = nLow;
 
     while (nNowIndex <= greaterAreaIndex)
     {
@@ -338,33 +342,33 @@ void HeapSort<T>::ArrySort(std::vector<T>& arr)
 
 // 堆排序辅助函数
 template <typename T>
-void HeapSort<T>::heapfyDown(std::vector<T>& arr, int index, int size)
+void HeapSort<T>::heapfyDown(std::vector<T>& arr, int nCurIndex, int nSize)
 {
-    int leftIndex = 2 * index + 1;      // 左子节点
-    int rightIndex = 2 * index + 2;     // 右子节点
+    int leftIndex = 2 * nCurIndex + 1;      // 左子节点
+    int rightIndex = 2 * nCurIndex + 2;     // 右子节点
 
-    int largestIndex = index;           // 较大节点
+    int largestIndex = nCurIndex;           // 较大节点
 
-    if (leftIndex < size && arr[leftIndex] > arr[largestIndex])
+    if (leftIndex < nSize && arr[leftIndex] > arr[largestIndex])
         largestIndex = leftIndex;
 
-    if (rightIndex < size && arr[rightIndex] > arr[largestIndex])
+    if (rightIndex < nSize && arr[rightIndex] > arr[largestIndex])
         largestIndex = rightIndex;
 
-    if (largestIndex != index)
+    if (largestIndex != nCurIndex)
     {
-        std::swap(arr[largestIndex], arr[index]);
-        heapfyDown(arr, largestIndex, size);
+        std::swap(arr[largestIndex], arr[nCurIndex]);
+        heapfyDown(arr, largestIndex, nSize);
     }
 
     return;
 }
 
 template <typename T>
-void Swap(std::vector<T>& arr, int index1, int index2)
+void Swap(std::vector<T>& arr, int nIndex1, int nIndex2)
 {
     int size = arr.size();
 
-    if (index1 >= 0 && index1 < size && index2 >= 0 && index2 < size)
-        std::swap(arr[index1], arr[index2]);
+    if (nIndex1 >= 0 && nIndex1 < size && nIndex2 >= 0 && nIndex2 < size)
+        std::swap(arr[nIndex1], arr[nIndex2]);
 }
