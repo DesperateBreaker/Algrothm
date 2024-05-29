@@ -60,7 +60,27 @@ bool RunAllSortTests()
     
     // 选择排序测试
     SelectSort<int> selectSort;
-    bRet |= ComparativeTest(&selectSort);
-    
+    bRet &= ComparativeTest(&selectSort);
+
+    // 冒泡排序测试
+    BubbleSort<int> bubbleSort;
+    bRet &= ComparativeTest(&bubbleSort);
+
+    // 插补排序测试
+    InsertSort<int> insertSort;
+    bRet &= ComparativeTest(&insertSort);
+
+    // 归并排序测试
+    MergeSort<int> mergeSort;
+    bRet &= ComparativeTest(&mergeSort);
+
+    // 快速排序测试
+    QuickSort<int> quckSort;
+    bRet &= ComparativeTest(&quckSort);
+
+    // 堆排序测试
+    HeapSort<int> heapSort;
+    bRet &= ComparativeTest(&heapSort);
+
     return bRet;
 }
