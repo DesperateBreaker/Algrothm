@@ -17,3 +17,7 @@ cmake-build-debug/
 
 # Ignore IDE-specific settings
 .idea/
+
+/build/
+/out/
+/.vs/
